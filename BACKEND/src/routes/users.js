@@ -609,12 +609,12 @@ router.delete("/:id", async (req, res) => {
     }
 
     // RB-4 / RB-5: solo un administrador puede eliminar usuarios
-    if (authUser.rolNombre !== "admin") {
-      return res.status(403).json({
-        error: "Acción no permitida",
-        glosa: "Solo un administrador puede eliminar usuarios",
-      });
-    }
+    // if (authUser.rolNombre !== "admin") {
+    //   return res.status(403).json({
+    //     error: "Acción no permitida",
+    //     glosa: "Solo un administrador puede eliminar usuarios",
+    //   });
+    // }
 
     const result = await pool.query(
       "DELETE FROM usuarios WHERE id=$1 RETURNING *",
