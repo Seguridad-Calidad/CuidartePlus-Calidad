@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0          # revisa TODO el historial, no solo el último cambio
       - name: Descargar Gitleaks
         run: |
-          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz | tar xz gitleaks
+          curl --proto '=https' --tlsv1.2 -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz | tar xz gitleaks
       - name: Buscar contraseñas y claves expuestas
         run: ./gitleaks git . --redact -v
 
@@ -65,7 +65,7 @@ jobs:
           cache-dependency-path: BACKEND/package-lock.json
       - name: Instalar dependencias del backend
         working-directory: BACKEND
-        run: npm ci
+        run: npm ci --ignore-scripts
       - name: Ejecutar pruebas unitarias e integración con cobertura
         working-directory: BACKEND
         run: npm test -- --runInBand
@@ -113,13 +113,13 @@ jobs:
       - name: Instalar Playwright
         working-directory: pruebas-e2e
         run: |
-          npm ci
-          npx playwright install --with-deps chromium
+          npm ci --ignore-scripts
+          ./node_modules/.bin/playwright install --with-deps chromium
       - name: Pruebas de sistema, aceptación y accesibilidad
         working-directory: pruebas-e2e
         env:
           BASE_URL: http://localhost:3333
-        run: npx playwright test
+        run: ./node_modules/.bin/playwright test
       - name: Guardar reporte de Playwright
         if: always()
         uses: actions/upload-artifact@v4
@@ -138,7 +138,7 @@ jobs:
       - name: Escaneo de seguridad ZAP (web y API)
         if: always()
         run: |
-          mkdir -p zap && chmod 777 zap
+          mkdir -p zap && sudo chown 1000:1000 zap   # 1000 = usuario "zap" del contenedor
           docker run --rm --network host -v "$PWD/zap:/zap/wrk:rw" \
             ghcr.io/zaproxy/zaproxy:stable \
             zap-baseline.py -t http://localhost:3333 -r zap-web.html -I
