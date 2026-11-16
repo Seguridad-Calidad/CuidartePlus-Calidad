@@ -93,7 +93,7 @@ jobs:
   pruebas-sistema:
     name: 3 · Sistema, aceptación, rendimiento y seguridad
     needs: [pruebas-codigo]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # Playwright 1.56 aún no soporta Ubuntu 26.04 (ubuntu-latest)
     steps:
       - uses: actions/checkout@v4
       - name: Construir y encender Cuidarte+ completo con Docker
