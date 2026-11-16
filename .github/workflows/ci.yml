@@ -37,11 +37,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Revisar Dockerfile del backend
-        uses: hadolint/hadolint-action@v3.1.0
+        uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf # v3.1.0
         with:
           dockerfile: BACKEND/Dockerfile
       - name: Revisar Dockerfile del frontend
-        uses: hadolint/hadolint-action@v3.1.0
+        uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf # v3.1.0
         with:
           dockerfile: FRONTEND/Dockerfile
 
@@ -78,7 +78,7 @@ jobs:
       - name: Ajustar rutas de cobertura para SonarQube
         run: sed -i 's#^SF:#SF:BACKEND/#' BACKEND/coverage/lcov.info
       - name: Análisis SonarQube Cloud y Quality Gate
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@2f77a1ec69fb1d595b06f35ab27e97605bdef703 # v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
@@ -172,13 +172,13 @@ jobs:
       - name: Preparar nombre del dueño en minúsculas
         run: echo "OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"
       - name: Iniciar sesión en GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Construir y publicar imagen del backend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: ./BACKEND
           push: true
@@ -186,7 +186,7 @@ jobs:
             ghcr.io/${{ env.OWNER }}/cuidarteplus-backend:latest
             ghcr.io/${{ env.OWNER }}/cuidarteplus-backend:${{ github.sha }}
       - name: Construir y publicar imagen del frontend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: ./FRONTEND
           push: true
